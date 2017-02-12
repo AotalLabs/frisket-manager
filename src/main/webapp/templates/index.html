@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="">
+    <head>
+
+    </head>
+    <body>
+        <input type="file" id="fileinput" />
+    </body>
+    <script>
+    //<![CDATA[
+        var url = '/print';
+        var fileInput = document.getElementById('fileinput');
+        var data;
+
+        fileInput.addEventListener('change', function () {
+            var file = fileInput.files[0];
+
+            if (file) {
+                var formData = new FormData();
+                formData.append('file', file);
+
+                console.log('--- formData.file ---');
+                console.log(formData.get('file'));
+
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function () {
+                    if ((xhr.readyState === XMLHttpRequest.DONE) && ((xhr.status === 200) || (xhr.status === 201))) {
+                       console.log('--- Success ---');
+                       console.log(xhr.responseText);
+                    }
+                    if ((xhr.readyState === XMLHttpRequest.DONE) && ((xhr.status === 500) || (xhr.status === 502))) {
+                        console.log('--- Error ---');
+                        console.log(xhr.responseText);
+                    }
+                    if ((xhr.readyState === XMLHttpRequest.DONE) && (xhr.status === 404)) {
+                        console.log('--- Error ---');
+                        console.log(xhr.responseText);
+                    }
+                }
+
+                xhr.open('POST', url, true);
+                xhr.setRequestHeader('Content-Type', 'application/zip');
+                xhr.send(formData);
+            }
+        });
+        //]]>
+    </script>
+</html>
